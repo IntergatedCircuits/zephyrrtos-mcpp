@@ -1,0 +1,4 @@
+# reference: https://github.com/zephyrproject-rtos/example-application
+build:
+  kconfig: Kconfig
+  cmake: .
