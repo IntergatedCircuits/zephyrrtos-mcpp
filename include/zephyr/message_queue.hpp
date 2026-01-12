@@ -12,12 +12,15 @@ template <typename T>
 struct message_queue : public ::k_msgq
 {
     void post(const T& msg) { ::k_msgq_put(this, &msg, K_FOREVER); }
+
     bool try_post(const T& msg) { return ::k_msgq_put(this, &msg, K_NO_WAIT) == 0; }
+
     template <class Rep, class Period>
     inline bool try_post_for(const T& msg, const std::chrono::duration<Rep, Period>& rel_time)
     {
         return ::k_msgq_put(this, &msg, to_timeout(rel_time)) == 0;
     }
+
     template <class Clock, class Duration>
     inline bool try_post_until(const T& msg,
                                const std::chrono::time_point<Clock, Duration>& abs_time)
@@ -61,23 +64,28 @@ struct message_queue : public ::k_msgq
     std::optional<T> peek() const
     {
         std::optional<T> msg{T()};
-        if (::k_msgq_peek(const_cast<::k_msgq*>(this), static_cast<void*>(&(*msg))) != 0)
+        if (::k_msgq_peek(const_cast<message_queue*>(this), static_cast<void*>(&(*msg))) != 0)
         {
             msg.reset();
         }
         return msg;
     }
 
-    std::size_t size() const { return ::k_msgq_num_used_get(const_cast<::k_msgq*>(this)); }
-    std::size_t free_space() const { return ::k_msgq_num_free_get(const_cast<::k_msgq*>(this)); }
+    std::size_t size() const { return ::k_msgq_num_used_get(const_cast<message_queue*>(this)); }
+
+    std::size_t free_space() const
+    {
+        return ::k_msgq_num_free_get(const_cast<message_queue*>(this));
+    }
     std::size_t max_size()
     {
         ::k_msgq_attrs attrs{};
         k_msgq_get_attrs(this, &attrs);
         return attrs.max_msgs;
     }
-    bool empty() const { return ::k_msgq_num_used_get(const_cast<::k_msgq*>(this)) == 0; }
-    bool full() const { return ::k_msgq_num_free_get(const_cast<::k_msgq*>(this)) == 0; }
+    bool empty() const { return ::k_msgq_num_used_get(const_cast<message_queue*>(this)) == 0; }
+
+    bool full() const { return ::k_msgq_num_free_get(const_cast<message_queue*>(this)) == 0; }
 
   protected:
     message_queue(const std::span<char>& buffer)
