@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_THREAD_HPP
-#define __ZEPHYR_THREAD_HPP
-
+#pragma once
 #include "zephyr/tick_timer.hpp"
 #include <system_error>
 #include <zephyr/kernel.h>
@@ -85,5 +83,3 @@ inline void sleep_until(const std::chrono::time_point<Clock, Duration>& abs_time
 
 } // namespace this_thread
 } // namespace zephyr
-
-#endif // __ZEPHYR_THREAD_HPP

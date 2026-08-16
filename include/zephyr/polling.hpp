@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_POLLING_HPP
-#define __ZEPHYR_POLLING_HPP
-
+#pragma once
 #include "zephyr/message_queue.hpp"
 #include "zephyr/semaphore.hpp"
 
@@ -52,5 +50,3 @@ inline auto poll_for(std::array<::k_poll_event, N>& events, tick_timer::duration
 }
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_POLLING_HPP

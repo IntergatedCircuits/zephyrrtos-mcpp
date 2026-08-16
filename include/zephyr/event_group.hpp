@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_EVENT_GROUP_HPP
-#define __ZEPHYR_EVENT_GROUP_HPP
-
+#pragma once
 #include "zephyr/tick_timer.hpp"
 
 namespace zephyr
@@ -188,5 +186,3 @@ struct event_group final : public ::k_event
 };
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_EVENT_GROUP_HPP

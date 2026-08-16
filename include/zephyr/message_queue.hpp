@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_MESSAGE_QUEUE_HPP
-#define __ZEPHYR_MESSAGE_QUEUE_HPP
-
+#pragma once
 #include <optional>
 #include <span>
 #include "zephyr/tick_timer.hpp"
@@ -104,5 +102,3 @@ struct message_queue_instance final : public message_queue<T>
 };
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_MESSAGE_QUEUE_HPP

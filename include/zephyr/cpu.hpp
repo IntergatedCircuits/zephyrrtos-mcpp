@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_CPU_HPP
-#define __ZEPHYR_CPU_HPP
-
+#pragma once
 #include "zephyr/tick_timer.hpp"
 #include <zephyr/spinlock.h>
 
@@ -32,5 +30,3 @@ bool is_in_isr()
 
 } // namespace this_cpu
 } // namespace zephyr
-
-#endif // __ZEPHYR_CPU_HPP

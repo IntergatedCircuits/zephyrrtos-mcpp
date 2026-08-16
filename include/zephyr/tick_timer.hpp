@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_TICK_TIMER_HPP
-#define __ZEPHYR_TICK_TIMER_HPP
-
+#pragma once
 #include <chrono>
 #include <zephyr/kernel.h>
 
@@ -50,5 +48,3 @@ inline constexpr auto duration_until(const std::chrono::time_point<Clock, Durati
 inline constexpr tick_timer::duration infinity{K_TICKS_FOREVER};
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_TICK_TIMER_HPP

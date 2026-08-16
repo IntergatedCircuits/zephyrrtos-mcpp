@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_SEMAPHORE_HPP
-#define __ZEPHYR_SEMAPHORE_HPP
-
+#pragma once
 #include "zephyr/tick_timer.hpp"
 
 namespace zephyr
@@ -41,5 +39,3 @@ struct counting_semaphore final : public ::k_sem
 using binary_semaphore = counting_semaphore<1>;
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_SEMAPHORE_HPP

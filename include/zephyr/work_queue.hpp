@@ -1,7 +1,5 @@
 // SPDX-License-Identifier: Apache-2.0
-#ifndef __ZEPHYR_WORK_QUEUE_HPP
-#define __ZEPHYR_WORK_QUEUE_HPP
-
+#pragma once
 #include "zephyr/message_queue.hpp"
 #include "zephyr/polling.hpp"
 
@@ -67,5 +65,3 @@ struct work_delayable final : public ::k_work_delayable
 };
 
 } // namespace zephyr
-
-#endif // __ZEPHYR_WORK_QUEUE_HPP
