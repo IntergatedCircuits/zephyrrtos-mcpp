@@ -1,0 +1,11 @@
+# Manifest for standalone development and CI of this module: west init -l .
+manifest:
+  self:
+    path: zephyrrtos-mcpp
+  projects:
+    - name: zephyr
+      url: https://github.com/zephyrproject-rtos/zephyr
+      revision: v4.5.0
+      import:
+        name-allowlist:
+          - cmsis_6

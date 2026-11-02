@@ -1,0 +1,21 @@
+tests:
+  mcpp.header_check:
+    build_only: true
+    platform_allow:
+      - native_sim/native/64
+      - qemu_cortex_m3
+    integration_platforms:
+      - native_sim/native/64
+      - qemu_cortex_m3
+    tags: mcpp
+  mcpp.header_check.clang_tidy:
+    build_only: true
+    platform_allow:
+      - native_sim/native/64
+    integration_platforms:
+      - native_sim/native/64
+    extra_args:
+      - USE_CLANG_TIDY=ON
+    tags:
+      - mcpp
+      - clang_tidy
