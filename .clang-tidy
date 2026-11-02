@@ -1,0 +1,75 @@
+Checks:
+  - bugprone-*
+  - -bugprone-easily-swappable-parameters
+  - modernize-*
+  - -modernize-use-trailing-return-type
+  - performance-*
+  - portability-*
+  # #pragma once is supported by every compiler used with zephyr, and has no guard name to clash
+  - -portability-avoid-pragma-once
+  - readability*
+  - -readability-identifier-length
+  - -readability-avoid-unconditional-preprocessor-if
+  - -readability-static-accessed-through-instance
+  - -readability-magic-numbers
+  - cppcoreguidelines*
+  # the wrappers derive from zephyr's C structs, which their k_*_init() functions initialize
+  # (zeroing them first would be wasteful, e.g. for message queue buffers)
+  - -cppcoreguidelines-pro-type-member-init
+  # the C API takes non-const pointers even for queries, and its callbacks and kernel objects
+  # are cast to the wrappers
+  - -cppcoreguidelines-pro-type-const-cast
+  - -cppcoreguidelines-pro-type-reinterpret-cast
+  - -cppcoreguidelines-avoid-magic-numbers
+  - -cppcoreguidelines-macro-usage
+  - -cppcoreguidelines-pro-bounds-constant-array-index
+  - -cppcoreguidelines-pro-bounds-array-to-pointer-decay
+  - clang-analyzer-*
+  - -clang-analyzer-optin.core.EnumCastOutOfRange
+  - google-*
+  - -google-runtime-float
+  - misc-*
+  - -misc-const-correctness
+  - -misc-non-private-member-variables-in-classes
+  - -misc-use-anonymous-namespace
+
+CheckOptions:
+  readability-implicit-bool-conversion.AllowIntegerConditions: true
+  readability-implicit-bool-conversion.AllowPointerConditions: true
+  readability-identifier-naming.NamespaceCase: lower_case
+  readability-identifier-naming.ClassCase: lower_case
+  readability-identifier-naming.StructCase: lower_case
+  readability-identifier-naming.UnionCase: lower_case
+  readability-identifier-naming.EnumCase: lower_case
+  readability-identifier-naming.EnumConstantCase: lower_case
+  readability-identifier-naming.TypeAliasCase: lower_case
+  readability-identifier-naming.TypedefCase: lower_case
+  readability-identifier-naming.FunctionCase: lower_case
+  readability-identifier-naming.MethodCase: lower_case
+  readability-identifier-naming.VariableCase: lower_case
+  readability-identifier-naming.ParameterCase: lower_case
+  readability-identifier-naming.ConstexprVariableCase: lower_case
+  readability-identifier-naming.GlobalConstantCase: lower_case
+  readability-identifier-naming.StaticConstantCase: lower_case
+  readability-identifier-naming.MemberConstantCase: lower_case
+  readability-identifier-naming.ClassMemberCase: lower_case
+  readability-identifier-naming.PrivateMemberCase: lower_case
+  readability-identifier-naming.PrivateMemberSuffix: _
+  readability-identifier-naming.ProtectedMemberCase: lower_case
+  readability-identifier-naming.ProtectedMemberSuffix: _
+  # type parameters are CamelCase like in the standard (Rep, Period, Clock),
+  # non-type parameters are upper case (COUNT, SIZE)
+  readability-identifier-naming.TypeTemplateParameterCase: CamelCase
+  readability-identifier-naming.TemplateTemplateParameterCase: CamelCase
+  readability-identifier-naming.ValueTemplateParameterCase: UPPER_CASE
+  readability-identifier-naming.MacroDefinitionCase: UPPER_CASE
+  cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted: true
+  cppcoreguidelines-avoid-do-while.IgnoreMacros: true
+  cppcoreguidelines-avoid-non-const-global-variables.IgnoreMacros: true
+  cppcoreguidelines-avoid-non-const-global-variables.AllowInternalLinkage: true
+  modernize-use-designated-initializers.IgnoreMacros: true
+  modernize-use-using.IgnoreMacros: true
+  readability-function-cognitive-complexity.IgnoreMacros: true
+  # zephyr's own headers include each other in cycles, only ours are of interest
+  misc-header-include-cycle.IgnoredFilesList: 'zephyr/include/zephyr/.*'
+  misc-include-cleaner.IgnoreHeaders: 'zephyr/.*\.h$'

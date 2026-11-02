@@ -41,6 +41,7 @@ struct event_group final : public ::k_event
     event_group& operator=(const event_group&) = delete;
 
     explicit event_group() { ::k_event_init(this); }
+    ~event_group() = default;
 
     /// @brief  Sets the provided flags in the condition.
     /// @param  flags: the flags to activate
@@ -64,7 +65,10 @@ struct event_group final : public ::k_event
     /// @brief  Reads the current flags status.
     /// @return The currently active flags
     /// @remark Thread and ISR context callable
-    zephyr::events get() const { return ::k_event_clear(const_cast<event_group*>(this), 0); }
+    [[nodiscard]] zephyr::events get() const
+    {
+        return ::k_event_clear(const_cast<event_group*>(this), 0);
+    }
 
     /// @brief  Blocks the current thread until any of the provided flags is raised.
     ///         When a flag unblocks the thread, it will be cleared.

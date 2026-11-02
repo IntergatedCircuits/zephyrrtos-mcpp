@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 #pragma once
+#include <array>
 #include <optional>
 #include <span>
 #include "zephyr/tick_timer.hpp"
@@ -14,16 +15,15 @@ struct message_queue : public ::k_msgq
     bool try_post(const T& msg) { return ::k_msgq_put(this, &msg, K_NO_WAIT) == 0; }
 
     template <class Rep, class Period>
-    inline bool try_post_for(const T& msg, const std::chrono::duration<Rep, Period>& rel_time)
+    bool try_post_for(const T& msg, const std::chrono::duration<Rep, Period>& rel_time)
     {
         return ::k_msgq_put(this, &msg, to_timeout(rel_time)) == 0;
     }
 
     template <class Clock, class Duration>
-    inline bool try_post_until(const T& msg,
-                               const std::chrono::time_point<Clock, Duration>& abs_time)
+    bool try_post_until(const T& msg, const std::chrono::time_point<Clock, Duration>& abs_time)
     {
-        return try_post_for(duration_until(abs_time));
+        return try_post_for(msg, duration_until(abs_time));
     }
 
     T get()
@@ -59,7 +59,7 @@ struct message_queue : public ::k_msgq
 
     void flush() { ::k_msgq_purge(this); }
 
-    std::optional<T> peek() const
+    [[nodiscard]] std::optional<T> peek() const
     {
         std::optional<T> msg{T()};
         if (::k_msgq_peek(const_cast<message_queue*>(this), static_cast<void*>(&(*msg))) != 0)
@@ -69,9 +69,12 @@ struct message_queue : public ::k_msgq
         return msg;
     }
 
-    std::size_t size() const { return ::k_msgq_num_used_get(const_cast<message_queue*>(this)); }
+    [[nodiscard]] std::size_t size() const
+    {
+        return ::k_msgq_num_used_get(const_cast<message_queue*>(this));
+    }
 
-    std::size_t free_space() const
+    [[nodiscard]] std::size_t free_space() const
     {
         return ::k_msgq_num_free_get(const_cast<message_queue*>(this));
     }
@@ -81,12 +84,18 @@ struct message_queue : public ::k_msgq
         k_msgq_get_attrs(this, &attrs);
         return attrs.max_msgs;
     }
-    bool empty() const { return ::k_msgq_num_used_get(const_cast<message_queue*>(this)) == 0; }
+    [[nodiscard]] bool empty() const
+    {
+        return ::k_msgq_num_used_get(const_cast<message_queue*>(this)) == 0;
+    }
 
-    bool full() const { return ::k_msgq_num_free_get(const_cast<message_queue*>(this)) == 0; }
+    [[nodiscard]] bool full() const
+    {
+        return ::k_msgq_num_free_get(const_cast<message_queue*>(this)) == 0;
+    }
 
   protected:
-    message_queue(const std::span<char>& buffer)
+    explicit message_queue(const std::span<char>& buffer)
     {
         ::k_msgq_init(this, buffer.data(), sizeof(T), buffer.size());
     }
@@ -98,7 +107,7 @@ struct message_queue_instance final : public message_queue<T>
     message_queue_instance() : message_queue<T>(msgq_buffer_) {}
 
   private:
-    char msgq_buffer_[SIZE * sizeof(T)] alignas(ALIGN);
+    alignas(ALIGN) std::array<char, SIZE * sizeof(T)> msgq_buffer_;
 };
 
 } // namespace zephyr

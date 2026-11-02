@@ -14,7 +14,7 @@ struct signal final : public ::k_poll_signal
 
     std::optional<int> check()
     {
-        unsigned int signaled;
+        unsigned int signaled = 0;
         std::optional<int> result{0};
         ::k_poll_signal_check(this, &signaled, &(*result));
         if (signaled == 0U)

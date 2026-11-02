@@ -14,7 +14,7 @@ struct work final : public ::k_work
     }
     auto submit() { return ::k_work_submit(this); }
     auto cancel() { return ::k_work_cancel(this); }
-    auto is_pending() const { return ::k_work_is_pending(this); }
+    [[nodiscard]] auto is_pending() const { return ::k_work_is_pending(this); }
 };
 
 struct work_poll final : public ::k_work_poll
@@ -40,13 +40,13 @@ struct work_delayable final : public ::k_work_delayable
         ::k_work_init_delayable(this, reinterpret_cast<k_work_handler_t>(fn));
     }
 
-    auto is_pending() const { return ::k_work_delayable_is_pending(this); }
+    [[nodiscard]] auto is_pending() const { return ::k_work_delayable_is_pending(this); }
 
-    auto expiration() const
+    [[nodiscard]] auto expiration() const
     {
         return tick_timer::time_point(tick_timer::duration(::k_work_delayable_expires_get(this)));
     }
-    auto remaining_time() const
+    [[nodiscard]] auto remaining_time() const
     {
         return tick_timer::duration(::k_work_delayable_remaining_get(this));
     }
@@ -58,7 +58,7 @@ struct work_delayable final : public ::k_work_delayable
     template <class Rep, class Period>
     int reschedule(const std::chrono::duration<Rep, Period>& rel_time)
     {
-        return ::k_work_schedule(this, to_timeout(rel_time));
+        return ::k_work_reschedule(this, to_timeout(rel_time));
     }
 
     auto cancel() { return ::k_work_cancel_delayable(this); }

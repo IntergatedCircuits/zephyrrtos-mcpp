@@ -24,13 +24,13 @@ struct counting_semaphore final : public ::k_sem
     bool try_acquire() { return ::k_sem_take(this, K_NO_WAIT) == 0; }
 
     template <class Rep, class Period>
-    inline bool try_acquire_for(const std::chrono::duration<Rep, Period>& rel_time)
+    bool try_acquire_for(const std::chrono::duration<Rep, Period>& rel_time)
     {
         return ::k_sem_take(this, to_timeout(rel_time)) == 0;
     }
 
     template <class Clock, class Duration>
-    inline bool try_acquire_until(const std::chrono::time_point<Clock, Duration>& abs_time)
+    bool try_acquire_until(const std::chrono::time_point<Clock, Duration>& abs_time)
     {
         return try_acquire_for(duration_until(abs_time));
     }

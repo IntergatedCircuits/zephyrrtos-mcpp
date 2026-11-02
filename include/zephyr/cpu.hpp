@@ -10,11 +10,14 @@ using spinlock = ::k_spinlock;
 class critical_section
 {
   public:
-    critical_section(spinlock& lock) : lock_(lock) { restore_ = ::k_spin_lock(&lock_); }
-    ~critical_section() { ::k_spin_unlock(&lock_, restore_); }
+    critical_section(const critical_section&) = delete;
+    critical_section& operator=(const critical_section&) = delete;
+
+    explicit critical_section(spinlock& lock) : lock_(&lock) { restore_ = ::k_spin_lock(lock_); }
+    ~critical_section() { ::k_spin_unlock(lock_, restore_); }
 
   private:
-    spinlock& lock_;
+    spinlock* lock_;
     ::k_spinlock_key_t restore_{};
 };
 
@@ -23,7 +26,7 @@ namespace this_cpu
 /// @brief  Determines if the current execution context is inside
 ///         an interrupt service routine.
 /// @return true if the current execution context is ISR, false otherwise
-bool is_in_isr()
+inline bool is_in_isr()
 {
     return ::k_is_in_isr();
 }
