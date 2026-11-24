@@ -13,6 +13,7 @@ struct work final : public ::k_work
         ::k_work_init(this, reinterpret_cast<k_work_handler_t>(fn));
     }
     auto submit() { return ::k_work_submit(this); }
+    auto submit(::k_work_q& queue) { return ::k_work_submit_to_queue(&queue, this); }
     auto cancel() { return ::k_work_cancel(this); }
     [[nodiscard]] auto is_pending() const { return ::k_work_is_pending(this); }
 };
@@ -28,6 +29,13 @@ struct work_poll final : public ::k_work_poll
     {
         return ::k_work_poll_submit(this, events.data(), static_cast<int>(events.size()),
                                     to_timeout(timeout));
+    }
+    auto submit(::k_work_q& queue, const std::span<poll_event>& events,
+                tick_timer::duration timeout)
+    {
+        return ::k_work_poll_submit_to_queue(&queue, this, events.data(),
+                                             static_cast<int>(events.size()),
+                                             to_timeout(timeout));
     }
 
     auto cancel() { return ::k_work_poll_cancel(this); }
@@ -56,9 +64,19 @@ struct work_delayable final : public ::k_work_delayable
         return ::k_work_schedule(this, to_timeout(rel_time));
     }
     template <class Rep, class Period>
+    int schedule(::k_work_q& queue, const std::chrono::duration<Rep, Period>& rel_time)
+    {
+        return ::k_work_schedule_for_queue(&queue, this, to_timeout(rel_time));
+    }
+    template <class Rep, class Period>
     int reschedule(const std::chrono::duration<Rep, Period>& rel_time)
     {
         return ::k_work_reschedule(this, to_timeout(rel_time));
+    }
+    template <class Rep, class Period>
+    int reschedule(::k_work_q& queue, const std::chrono::duration<Rep, Period>& rel_time)
+    {
+        return ::k_work_reschedule_for_queue(&queue, this, to_timeout(rel_time));
     }
 
     auto cancel() { return ::k_work_cancel_delayable(this); }
